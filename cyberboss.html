@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05070c">
+<title>CyberBoss · 交互演示</title>
+<style>
+  /* ============================================================
+     CyberBoss 交互演示 v2
+     与主站一致的精密深空观测台美学：#05070c 底 + #5eead4 主强调
+     ============================================================ */
+  :root {
+    --bg: #05070c;
+    --bg2: #080d16;
+    --line: rgba(255, 255, 255, 0.085);
+    --line2: rgba(255, 255, 255, 0.17);
+    --ink: #edf2fa;
+    --ink2: #a9b5cc;
+    --ink3: #78849e;
+    --teal: #5eead4;
+    --sky: #7dd3fc;
+    --violet: #a78bfa;
+    --amber: #fbbf24;
+    --sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
+    --ease: cubic-bezier(0.22, 0.68, 0, 1);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; background: var(--bg); }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(960px 600px at 82% -10%, #091624 0%, transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: rgba(94, 234, 212, 0.28); color: #fff; }
+  a { color: inherit; }
+  button, input { font: inherit; }
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+
+  .page {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: clamp(18px, 3vw, 30px) clamp(18px, 4.5vw, 48px) 64px;
+  }
+
+  /* ── 顶栏 ─────────────────────────── */
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .top-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink2);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 5px 10px;
+    transition: color 0.25s, border-color 0.25s;
+  }
+  .back-link:hover { color: var(--teal); border-color: rgba(94, 234, 212, 0.45); }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .brand i {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 10px rgba(94, 234, 212, 0.85);
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--teal);
+    border: 1px solid rgba(94, 234, 212, 0.3);
+    background: rgba(94, 234, 212, 0.06);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+  .gh {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ink2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 2px;
+    transition: color 0.25s, border-color 0.25s;
+  }
+  .gh:hover { color: var(--teal); border-color: var(--teal); }
+
+  /* ── 简介 ─────────────────────────── */
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 24px;
+    padding-block: clamp(16px, 2.2vw, 24px) clamp(14px, 1.8vw, 20px);
+  }
+  .eyebrow {
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--teal);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    line-height: 1.25;
+    font-weight: 700;
+  }
+  .lead {
+    margin: 14px 0 0;
+    max-width: 38em;
+    color: var(--ink2);
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chips span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.015);
+  }
+  .stats div {
+    padding: 14px 18px;
+    text-align: right;
+  }
+  .stats div + div { border-left: 1px solid var(--line); }
+  .stats b {
+    display: block;
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stats span {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--ink3);
+  }
+
+  /* ── 舞台 ─────────────────────────── */
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 396px) minmax(0, 1fr);
+    gap: clamp(18px, 3vw, 30px);
+    align-items: start;
+    margin-top: 6px;
+  }
+
+  /* 模拟手机 */
+  .phone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: min(560px, 66vh);
+    min-height: 460px;
+    border: 1px solid var(--line2);
+    border-radius: 26px;
+    background: linear-gradient(180deg, #0a1019, #060910 65%);
+    overflow: hidden;
+  }
+  .phone-status {
+    display: flex;
+    justify-content: space-between;
+    padding: 11px 20px 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink3);
+  }
+  .phone-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 8px 16px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .avatar {
+    width: 30px; height: 30px; flex: none;
+    border-radius: 50%;
+    background: conic-gradient(from 190deg, #5eead4, #7dd3fc, #a78bfa, #5eead4);
+  }
+  .phone-head strong { display: block; font-size: 13.5px; }
+  .phone-head small { display: block; font-size: 10.5px; color: var(--ink3); }
+  .live {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--teal);
+    border: 1px solid rgba(94, 234, 212, 0.35);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  .chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  }
+  .time {
+    align-self: center;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink3);
+    margin: 6px 0 2px;
+  }
+  .sys {
+    align-self: center;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    background: rgba(94, 234, 212, 0.05);
+    border: 1px dashed rgba(94, 234, 212, 0.3);
+    border-radius: 4px;
+    padding: 3px 9px;
+    margin: 2px 0;
+  }
+  .msg {
+    max-width: 84%;
+    padding: 9px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.68;
+    animation: msg-in 0.28s ease both;
+  }
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+  .msg.bot {
+    align-self: flex-start;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    border-bottom-left-radius: 4px;
+  }
+  .msg.user {
+    align-self: flex-end;
+    color: #04121a;
+    font-weight: 500;
+    background: linear-gradient(135deg, #5eead4, #7dd3fc);
+    border-bottom-right-radius: 4px;
+  }
+  .msg.typing { display: inline-flex; gap: 4px; align-items: center; height: 18px; }
+  .msg.typing i {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--ink3);
+    animation: blink 1.2s infinite;
+  }
+  .msg.typing i:nth-child(2) { animation-delay: 0.15s; }
+  .msg.typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.25; }
+    40% { opacity: 1; }
+  }
+
+  .quick-prompts {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 12px 4px;
+    border-top: 1px solid var(--line);
+    scrollbar-width: none;
+  }
+  .quick-prompts::-webkit-scrollbar { display: none; }
+  .quick-prompts button {
+    flex: none;
+    padding: 4px 9px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.025);
+    color: var(--ink2);
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .quick-prompts button:hover {
+    color: var(--teal);
+    border-color: rgba(94, 234, 212, 0.45);
+  }
+
+  .composer {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px 12px;
+  }
+  .composer input {
+    flex: 1;
+    min-width: 0;
+    height: 38px;
+    padding: 0 13px;
+    border-radius: 999px;
+    border: 1px solid var(--line2);
+    background: rgba(255, 255, 255, 0.035);
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .composer input::placeholder { color: var(--ink3); }
+  .composer input:focus { outline: none; border-color: var(--teal); }
+  .composer button {
+    flex: none;
+    height: 38px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #5eead4, #7dd3fc);
+    color: #04121a;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* 右侧状态仪表 */
+  .side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+  .control {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(10, 15, 26, 0.72);
+    padding: 15px 16px 16px;
+  }
+  .clock-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .clock {
+    font-family: var(--mono);
+    font-size: 30px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .hint { font-family: var(--mono); font-size: 10.5px; color: var(--ink3); }
+
+  .scrub {
+    width: 100%;
+    margin: 14px 0 12px;
+    accent-color: var(--teal);
+    height: 18px;
+    cursor: pointer;
+  }
+
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btns button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 6px;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    cursor: pointer;
+    border: 1px solid rgba(94, 234, 212, 0.42);
+    background: rgba(94, 234, 212, 0.1);
+    color: #bff6ec;
+    transition: background-color 0.25s, border-color 0.25s;
+  }
+  .btns button:hover { background: rgba(94, 234, 212, 0.18); border-color: var(--teal); color: #fff; }
+  .btns button.ghost {
+    border-color: var(--line2);
+    background: rgba(255, 255, 255, 0.025);
+    color: var(--ink2);
+  }
+  .btns button.ghost:hover { border-color: rgba(94, 234, 212, 0.45); color: var(--ink); }
+
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+  .tabs button {
+    flex: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink3);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+  }
+  .tabs button i {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 10px;
+    margin-left: 5px;
+    opacity: 0.85;
+  }
+  .tabs button.on {
+    color: var(--teal);
+    border-color: rgba(94, 234, 212, 0.45);
+    background: rgba(94, 234, 212, 0.08);
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(8, 12, 22, 0.72);
+    padding: 6px 16px;
+    min-height: 310px;
+    max-height: 410px;
+    overflow-y: auto;
+  }
+  .pane { display: none; padding: 10px 0 14px; }
+  .pane.on { display: block; }
+  .empty { color: var(--ink3); font-size: 12.5px; padding: 24px 0; text-align: center; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+  }
+  .row:last-child { border-bottom: 0; }
+  .row-t { font-family: var(--mono); font-size: 10.5px; color: var(--teal); padding-top: 2px; }
+  .row-b { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+  .row-b b { color: var(--ink); font-weight: 500; }
+
+  .diary { padding: 10px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.07); }
+  .diary:last-child { border-bottom: 0; }
+  .diary span { font-family: var(--mono); font-size: 10px; color: var(--violet); }
+  .diary p { margin: 4px 0 0; font-size: 13px; color: var(--ink2); line-height: 1.7; }
+
+  .rem { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.07); }
+  .rem:last-child { border-bottom: 0; }
+  .rem .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex: none; }
+  .rem .dot.pending { background: var(--amber); }
+  .rem .dot.done { background: var(--teal); }
+  .rem b { display: block; font-size: 13px; font-weight: 500; color: var(--ink2); }
+  .rem small { font-size: 11px; color: var(--ink3); }
+
+  .loc-card { padding: 12px 0 6px; }
+  .loc-place { font-size: 17px; font-weight: 600; }
+  .loc-meta { font-family: var(--mono); font-size: 11px; color: var(--ink3); margin-top: 4px; }
+  .battery {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 12px 0 16px;
+    overflow: hidden;
+  }
+  .battery i { display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--sky)); }
+  .loc-hist { display: flex; flex-direction: column; gap: 7px; }
+  .loc-hist div { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink3); }
+  .loc-hist b { color: var(--ink2); font-weight: 400; }
+
+  .tool {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 8px 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+    align-items: center;
+  }
+  .tool:last-child { border-bottom: 0; }
+  .tool code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--sky);
+    word-break: break-all;
+  }
+  .tool span { font-family: var(--mono); font-size: 10px; color: var(--ink3); white-space: nowrap; }
+  .tool .ok { color: var(--teal); }
+
+  .disclaimer {
+    margin: 4px 0 0;
+    font-size: 11.5px;
+    color: var(--ink3);
+    line-height: 1.7;
+  }
+
+  /* ── 链路与关于 ─────────────────────────── */
+  .flow {
+    margin-top: clamp(36px, 5vw, 56px);
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .flow h2, .about h2 {
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--ink3);
+  }
+  .flow-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+  .flow-row span {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.025);
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+  .flow-row i { color: var(--teal); font-style: normal; }
+
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(20px, 4vw, 44px);
+    margin-top: clamp(28px, 4vw, 44px);
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .about p { margin: 0; font-size: 13px; line-height: 1.85; color: var(--ink2); }
+  .about .role {
+    border-left: 2px solid var(--teal);
+    background: rgba(94, 234, 212, 0.045);
+    padding: 13px 16px;
+  }
+  .about .role b { color: var(--teal); font-weight: 500; }
+  .about a { color: var(--teal); text-decoration: none; border-bottom: 1px solid rgba(94, 234, 212, 0.35); }
+  .about a:hover { color: #fff; }
+
+  footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink3);
+  }
+
+  /* ── 响应式 ─────────────────────────── */
+  @media (max-width: 900px) {
+    .stage { grid-template-columns: minmax(0, 1fr); }
+    .phone { width: 100%; max-width: 420px; margin: 0 auto; height: min(540px, 68vh); }
+    .intro { grid-template-columns: minmax(0, 1fr); align-items: start; }
+    .stats { width: 100%; }
+    .stats div { text-align: left; }
+    .about { grid-template-columns: minmax(0, 1fr); }
+    .panel { max-height: none; min-height: 220px; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 14px; }
+    .stats div { padding: 12px; }
+    .stats b { font-size: 20px; }
+    .clock { font-size: 26px; }
+    .phone { border-radius: 20px; min-height: 460px; }
+    .btns button { padding: 6px 11px; font-size: 12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="top">
+    <div class="top-left">
+      <a class="back-link" href="index.html">← 返回作品集</a>
+      <div class="brand"><i></i> CyberBoss <span class="tag">交互演示</span></div>
+    </div>
+    <a class="gh" href="https://github.com/WenXiaoWendy/cyberboss" target="_blank" rel="noopener noreferrer">WenXiaoWendy/cyberboss ↗</a>
+  </header>
+
+  <section class="intro">
+    <div>
+      <p class="eyebrow">PERSONAL AGENT · 2026</p>
+      <h1>一个会主动出现的微信 Agent</h1>
+      <p class="lead">它记得你几点说过话、在哪停留了多久，会在随机时刻自己醒来；会写日记、补时间轴、替你提醒未来的自己。下面是一天的完整运行演示。</p>
+      <div class="chips">
+        <span>个人实践</span>
+        <span>基于开源项目</span>
+        <span>AGPL-3.0</span>
+      </div>
+    </div>
+    <div class="stats">
+      <div><b>10</b><span>功能模块</span></div>
+      <div><b>5</b><span>类本地工具</span></div>
+      <div><b>2</b><span>套 runtime</span></div>
+    </div>
+  </section>
+
+  <section class="stage">
+
+    <!-- 模拟手机 -->
+    <div class="phone" aria-label="模拟消息界面">
+      <div class="phone-status"><span id="phoneClock">07:12</span><span>5G</span><span>68%</span></div>
+      <div class="phone-head">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <strong>赛博老板</strong>
+          <small>本地 runtime · 在线</small>
+        </div>
+        <span class="live">LIVE</span>
+      </div>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="quick-prompts" aria-label="快捷测试指令">
+        <button type="button" data-quick="10点提醒我提交原型">10点提醒我</button>
+        <button type="button" data-quick="记一下今天完成了RAG复盘">记一下日记</button>
+        <button type="button" data-quick="我现在在哪">我现在在哪</button>
+        <button type="button" data-quick="今天有点累">有点累</button>
+      </div>
+      <form class="composer" id="composer">
+        <input id="input" type="text" placeholder="给她发条消息…" aria-label="输入消息" autocomplete="off">
+        <button type="submit">发送</button>
+      </form>
+    </div>
+
+    <!-- 右侧仪表盘 -->
+    <div class="side">
+      <div class="control">
+        <div class="clock-row">
+          <span class="clock" id="clock">07:00</span>
+          <span class="hint">SYNTHETIC DEMO · NO WECHAT LINK</span>
+        </div>
+        <input class="scrub" id="scrub" type="range" min="0" max="1020" value="12" step="1" aria-label="一天的时间轴">
+        <div class="btns">
+          <button type="button" id="play">播放这一天</button>
+          <button type="button" class="ghost" id="reset">重置</button>
+          <button type="button" class="ghost" id="wake">随机唤醒</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabs" role="tablist" aria-label="系统面板">
+        <button type="button" data-tab="timeline" class="on" role="tab" aria-selected="true">时间轴 <i id="c-tl">0</i></button>
+        <button type="button" data-tab="diary" role="tab" aria-selected="false">日记 <i id="c-diary">0</i></button>
+        <button type="button" data-tab="reminders" role="tab" aria-selected="false">提醒 <i id="c-rem">0</i></button>
+        <button type="button" data-tab="location" role="tab" aria-selected="false">行踪</button>
+        <button type="button" data-tab="tools" role="tab" aria-selected="false">工具调用 <i id="c-tools">0</i></button>
+      </div>
+
+      <div class="panel">
+        <div class="pane on" data-pane="timeline" id="pane-timeline"></div>
+        <div class="pane" data-pane="diary" id="pane-diary"></div>
+        <div class="pane" data-pane="reminders" id="pane-reminders"></div>
+        <div class="pane" data-pane="location" id="pane-location"></div>
+        <div class="pane" data-pane="tools" id="pane-tools"></div>
+      </div>
+
+      <p class="disclaimer">演示中的消息、位置与日记均为合成示例，不包含真实数据。真实的 CyberBoss 运行在本机，通过微信桥接调用本地 Codex / Claude Code。</p>
+    </div>
+  </section>
+
+  <section class="flow">
+    <h2>运行链路</h2>
+    <div class="flow-row">
+      <span>微信消息</span><i>→</i>
+      <span>HTTP Bridge</span><i>→</i>
+      <span>加时间戳</span><i>→</i>
+      <span>Codex / Claude Code</span><i>→</i>
+      <span>MCP 工具</span><i>→</i>
+      <span>微信回复</span>
+    </div>
+  </section>
+
+  <section class="about">
+    <div>
+      <h2>我的角色</h2>
+      <div class="role">
+        <p><b>本地部署与微信接入 · 人格与工作区配置 · 工具链调试与使用验证。</b> 在真实设备上跑通提醒队列、本地日记、时间轴与行踪 MCP，并依据使用反馈调整唤醒策略。</p>
+      </div>
+    </div>
+    <div>
+      <h2>来源与许可</h2>
+      <p>本项目基于开源项目 <a href="https://github.com/WenXiaoWendy/cyberboss" target="_blank" rel="noopener noreferrer">WenXiaoWendy/cyberboss</a>（AGPL-3.0）构建，原作者 WenXiaoWendy。以上功能均为该项目能力；本页展示的是我在其基础上的个人部署、配置与使用实践。</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>CYBERBOSS · 交互演示</span>
+    <span>合成数据 · 无真实微信连接</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var MAX = 1020;
+  var INITIAL = 12;
+
+  var EVENTS = [
+    { m: 10, t: "07:10", who: "user", text: "醒了" },
+    {
+      m: 12, t: "07:12", who: "bot",
+      text: "早。昨晚 23:40 之后就没消息了，睡了约 7.5 小时。今天 9:30 有课。",
+      tools: ["cyberboss_timeline_write", "whereabouts_current_stay"],
+      tl: "07:10 起床 · 家",
+      loc: { place: "家", stay: "8h 12m", battery: 74 }
+    },
+    { m: 62, t: "08:02", who: "user", text: "到教室了" },
+    {
+      m: 64, t: "08:04", who: "bot",
+      text: "记下了：08:02 到教学楼 A。电量 68%。",
+      tools: ["whereabouts_current_stay", "cyberboss_timeline_write"],
+      tl: "08:02 到达 教学楼 A",
+      loc: { place: "教学楼 A", stay: "0m", battery: 68 }
+    },
+    {
+      m: 200, t: "10:20", who: "bot", wake: true,
+      text: "你在这个位置坐了 2 小时 17 分。站起来走 5 分钟，回来我继续盯。",
+      tools: ["whereabouts_recent_stays"],
+      tl: "08:02 – 10:20 自习 · 教学楼 A"
+    },
+    { m: 340, t: "12:40", who: "user", text: "吃了沙拉和鸡胸" },
+    {
+      m: 342, t: "12:42", who: "bot",
+      text: "记入饮食。按你上周的基线，今天蛋白质偏低，晚餐可以补一点。",
+      tools: ["cyberboss_diary_append"],
+      diary: "12:42 午餐：沙拉 + 鸡胸。蛋白质偏低，晚餐补。"
+    },
+    {
+      m: 538, t: "15:58", who: "bot", wake: true,
+      text: "提醒：16:00 交 PRD 初稿。这是昨天 21:10 的你留给现在的你的。",
+      tools: ["cyberboss_reminder_create"],
+      rem: { text: "16:00 交 PRD 初稿", status: "done" }
+    },
+    { m: 542, t: "16:02", who: "user", text: "交了" },
+    {
+      m: 544, t: "16:04", who: "bot",
+      text: "收到。要我把这次写进日记吗？",
+      tools: ["cyberboss_diary_append"],
+      diary: "16:04 PRD 初稿已提交。"
+    },
+    { m: 740, t: "19:20", who: "user", text: "今天有点累" },
+    {
+      m: 742, t: "19:22", who: "bot",
+      text: "今天专注 3 段，共 4 小时 12 分，比昨天多 40 分钟。累了就收工，不用再加任务。",
+      tools: ["cyberboss_timeline_build"],
+      tl: "19:22 今日专注 4h 12m（3 段）"
+    },
+    {
+      m: 1000, t: "23:40", who: "bot",
+      text: "明天 9:30 的课。按最近 7 天的入睡时间，现在该收了。今天的日记我放好了。",
+      tools: ["cyberboss_diary_append"],
+      diary: "23:40 收工。今日专注 4h 12m，步行 2 段。"
+    }
+  ];
+
+  var WAKES = [
+    "随机唤醒：你在同一位置坐了 1 小时 40 分。起来接杯水？",
+    "随机唤醒：你昨天这个时间在改 PRD。今天进度怎么样？",
+    "随机唤醒：今天的日记还空着。要不要口述两句，我帮你记？"
+  ];
+
+  var INTENTS = [
+    { k: ["提醒", "几点", "叫我"], r: "好，已放进提醒队列。到点我会在这儿找你，不需要你设闹钟。", act: "rem" },
+    { k: ["日记", "记一下", "记录"], r: "记下了。Zero-Token 日记只写本地文件，不额外调用模型。", act: "diary" },
+    { k: ["在哪", "位置", "到哪"], r: "你现在在「{place}」，已停留 {stay}。", act: null },
+    { k: ["累", "困", "不想"], r: "那就不加了。今天专注 3 段共 4 小时 12 分，已经够了。", act: null },
+    { k: ["你是谁", "介绍"], r: "我是运行在你本机的 Agent，接在微信上。因为能读到本地时间戳、行踪和提醒队列，所以会主动出现。", act: null }
+  ];
+
+  var DEFAULT_REPLY = "这是演示环境，只接了脚本化回复。真实版本里，这条消息会进入本地 Codex / Claude Code runtime，由模型决定回复还是调用工具。";
+
+  var chat = document.getElementById("chat");
+  var clock = document.getElementById("clock");
+  var scrub = document.getElementById("scrub");
+  var playBtn = document.getElementById("play");
+  var composer = document.getElementById("composer");
+  var input = document.getElementById("input");
+
+  var st = {
+    m: 0,
+    msgs: 0,
+    tl: [],
+    diary: [],
+    rem: [],
+    tools: [],
+    loc: null,
+    hist: [],
+    lastMin: -999
+  };
+
+  var playing = false;
+  var timer = null;
+  var wakeIndex = 0;
+
+  function fmt(m) {
+    var total = 7 * 60 + m;
+    var h = Math.floor(total / 60);
+    var mm = total % 60;
+    if (h >= 24) return "24:00";
+    return String(h).padStart(2, "0") + ":" + String(mm).padStart(2, "0");
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function setClock(m) {
+    st.m = m;
+    clock.textContent = fmt(m);
+    var pc = document.getElementById("phoneClock");
+    if (pc) pc.textContent = fmt(m);
+    scrub.value = String(m);
+  }
+
+  function appendTimeIfNeeded(m) {
+    if (st.msgs === 0 || m - st.lastMin >= 15) {
+      var d = document.createElement("div");
+      d.className = "time";
+      d.textContent = fmt(m);
+      chat.appendChild(d);
+    }
+    st.lastMin = m;
+  }
+
+  function appendMsg(who, text) {
+    var d = document.createElement("div");
+    d.className = "msg " + who;
+    d.textContent = text;
+    chat.appendChild(d);
+    st.msgs += 1;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function system(text) {
+    var d = document.createElement("div");
+    d.className = "sys";
+    d.textContent = text;
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function typing() {
+    var d = document.createElement("div");
+    d.className = "msg bot typing";
+    d.innerHTML = "<i></i><i></i><i></i>";
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+    return d;
+  }
+
+  function apply(e) {
+    if (e.wake) system("随机唤醒 · checkin");
+    appendTimeIfNeeded(e.m);
+    appendMsg(e.who, e.text);
+
+    if (e.tl) st.tl.push({ t: e.t, text: e.tl });
+    if (e.diary) st.diary.push({ t: e.t, text: e.diary });
+    if (e.rem) st.rem.push({ t: e.t, text: e.rem.text, status: e.rem.status });
+    if (e.loc) {
+      st.loc = e.loc;
+      st.hist.unshift({ t: e.t, place: e.loc.place });
+      if (st.hist.length > 5) st.hist.length = 5;
+    }
+
+    (e.tools || []).forEach(function (name) {
+      st.tools.push({ t: e.t, name: name, ms: 8 + Math.floor(Math.random() * 40) });
+    });
+
+    setClock(e.m);
+    renderPanels();
+  }
+
+  function renderPanels() {
+    document.getElementById("c-tl").textContent = st.tl.length;
+    document.getElementById("c-diary").textContent = st.diary.length;
+    document.getElementById("c-rem").textContent = st.rem.length;
+    document.getElementById("c-tools").textContent = st.tools.length;
+
+    var tl = document.getElementById("pane-timeline");
+    tl.innerHTML = st.tl.length
+      ? st.tl.map(function (x) {
+          return '<div class="row"><span class="row-t">' + esc(x.t) + '</span><div class="row-b"><b>' + esc(x.text) + "</b></div></div>";
+        }).join("")
+      : '<p class="empty">还没有时间轴事件。点「播放这一天」。</p>';
+
+    var diary = document.getElementById("pane-diary");
+    diary.innerHTML = st.diary.length
+      ? st.diary.map(function (x) {
+          return '<div class="diary"><span>' + esc(x.t) + "</span><p>" + esc(x.text) + "</p></div>";
+        }).join("")
+      : '<p class="empty">日记由本地写入，不消耗模型调用。</p>';
+
+    var rem = document.getElementById("pane-reminders");
+    rem.innerHTML = st.rem.length
+      ? st.rem.map(function (x) {
+          var done = x.status === "done";
+          return '<div class="rem"><span class="dot ' + (done ? "done" : "pending") + '"></span><div><b>' + esc(x.text) + "</b><small>" + (done ? "已触发 · 已通知" : "等待中") + "</small></div></div>";
+        }).join("")
+      : '<p class="empty">提醒是模型留给「未来的自己」的任务。</p>';
+
+    var loc = document.getElementById("pane-location");
+    if (!st.loc) {
+      loc.innerHTML = '<p class="empty">尚未收到定位上报。</p>';
+    } else {
+      loc.innerHTML =
+        '<div class="loc-card"><div class="loc-place">' + esc(st.loc.place) + "</div>" +
+        '<div class="loc-meta">停留 ' + esc(st.loc.stay) + " · 电量 " + esc(st.loc.battery) + "%</div>" +
+        '<div class="battery"><i style="width:' + Number(st.loc.battery) + '%"></i></div></div>' +
+        '<div class="loc-hist">' +
+        st.hist.map(function (x) {
+          return "<div><span>" + esc(x.t) + "</span><b>" + esc(x.place) + "</b></div>";
+        }).join("") +
+        "</div>";
+    }
+
+    var tools = document.getElementById("pane-tools");
+    tools.innerHTML = st.tools.length
+      ? st.tools.slice().reverse().map(function (x) {
+          return '<div class="tool"><code>' + esc(x.name) + '</code><span class="ok">ok · ' + x.ms + "ms</span><span>" + esc(x.t) + "</span></div>";
+        }).join("")
+      : '<p class="empty">还没有工具调用。</p>';
+  }
+
+  function clearAll() {
+    chat.innerHTML = "";
+    st.msgs = 0;
+    st.tl = [];
+    st.diary = [];
+    st.rem = [];
+    st.tools = [];
+    st.loc = null;
+    st.hist = [];
+    st.lastMin = -999;
+  }
+
+  function reset() {
+    stop();
+    clearAll();
+    EVENTS.filter(function (e) { return e.m <= INITIAL; }).forEach(apply);
+    setClock(INITIAL);
+    renderPanels();
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function step() {
+    if (!playing) return;
+    var next = null;
+    for (var i = 0; i < EVENTS.length; i++) {
+      if (EVENTS[i].m > st.m) { next = EVENTS[i]; break; }
+    }
+    if (!next) { stop(); return; }
+
+    var gap = Math.max(650, Math.min(1300, (next.m - st.m) * 3));
+    timer = window.setTimeout(function () {
+      if (!playing) return;
+      if (next.who === "bot") {
+        var tp = typing();
+        window.setTimeout(function () {
+          tp.remove();
+          if (!playing) return;
+          apply(next);
+          step();
+        }, 380);
+      } else {
+        apply(next);
+        step();
+      }
+    }, gap);
+  }
+
+  function play() {
+    if (playing) { stop(); return; }
+    if (st.m >= MAX) reset();
+    playing = true;
+    playBtn.textContent = "暂停播放";
+    step();
+  }
+
+  function stop() {
+    playing = false;
+    window.clearTimeout(timer);
+    playBtn.textContent = "播放这一天";
+  }
+
+  function submitUserMessage(text) {
+    var v = (text || "").trim();
+    if (!v) return;
+    input.value = "";
+
+    var m = st.m;
+    appendTimeIfNeeded(m);
+    appendMsg("user", v);
+
+    var tp = typing();
+    window.setTimeout(function () {
+      tp.remove();
+      var hit = null;
+      for (var i = 0; i < INTENTS.length; i++) {
+        var it = INTENTS[i];
+        for (var j = 0; j < it.k.length; j++) {
+          if (v.indexOf(it.k[j]) !== -1) { hit = it; break; }
+        }
+        if (hit) break;
+      }
+
+      var out = hit
+        ? hit.r.replace("{place}", st.loc ? st.loc.place : "教学楼 A").replace("{stay}", st.loc ? st.loc.stay : "2h 17m")
+        : DEFAULT_REPLY;
+
+      if (hit && hit.act === "rem") {
+        st.rem.push({ t: fmt(m), text: v, status: "pending" });
+        st.tools.push({ t: fmt(m), name: "cyberboss_reminder_create", ms: 16 });
+      }
+      if (hit && hit.act === "diary") {
+        st.diary.push({ t: fmt(m), text: v });
+        st.tools.push({ t: fmt(m), name: "cyberboss_diary_append", ms: 11 });
+      }
+
+      appendTimeIfNeeded(m);
+      appendMsg("bot", out);
+      renderPanels();
+    }, 650);
+  }
+
+  playBtn.addEventListener("click", play);
+  document.getElementById("reset").addEventListener("click", reset);
+
+  document.getElementById("wake").addEventListener("click", function () {
+    var text = WAKES[wakeIndex % WAKES.length];
+    wakeIndex += 1;
+    var m = Math.min(MAX, st.m + 1);
+    st.m = m;
+    system("随机唤醒 · checkin");
+    appendTimeIfNeeded(m);
+    appendMsg("bot", text);
+    st.tools.push({ t: fmt(m), name: "cyberboss_system_send", ms: 12 });
+    setClock(m);
+    renderPanels();
+  });
+
+  scrub.addEventListener("input", function () {
+    stop();
+    var target = Number(scrub.value);
+    clearAll();
+    EVENTS.filter(function (e) { return e.m <= target; }).forEach(apply);
+    setClock(target);
+    renderPanels();
+    chat.scrollTop = chat.scrollHeight;
+  });
+
+  document.getElementById("tabs").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-tab]");
+    if (!btn) return;
+    var name = btn.getAttribute("data-tab");
+    Array.prototype.forEach.call(this.querySelectorAll("button[data-tab]"), function (b) {
+      var on = b === btn;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".pane"), function (p) {
+      p.classList.toggle("on", p.getAttribute("data-pane") === name);
+    });
+  });
+
+  composer.addEventListener("submit", function (e) {
+    e.preventDefault();
+    submitUserMessage(input.value);
+  });
+
+  document.querySelectorAll("[data-quick]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      submitUserMessage(btn.getAttribute("data-quick"));
+    });
+  });
+
+  reset();
+})();
+</script>
+</body>
+</html>
